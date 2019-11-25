@@ -13,17 +13,7 @@ import (
 func main() {
 	flag.Usage = func() {
 		self := os.Args[0]
-		fmt.Fprintf(os.Stderr, "%s: a utility for convertig timestamp and unixtime.\n\n", self)
-		fmt.Fprintf(os.Stderr, "USAGE::\n")
-		fmt.Fprintf(os.Stderr, "  %s [OPTIONS] [TIMESTAMP or UNIXTIME]\n\n", self)
-		fmt.Fprintf(os.Stderr, "OPTIONS:\n")
-		flag.PrintDefaults()
-		fmt.Fprintf(os.Stderr, "\n")
-		fmt.Fprintf(os.Stderr, "ARGS:\n")
-		fmt.Fprintf(os.Stderr, "  <TIMESTAMP>\n")
-		fmt.Fprintf(os.Stderr, "      yyyy-MM-dd HH:mm:ss\n")
-		fmt.Fprintf(os.Stderr, "  <UNIXTIME>\n")
-		fmt.Fprintf(os.Stderr, "      elapled time (sec, msec, nsec) from 1970-01-01 00:00:00\n")
+		usage(self)
 	}
 	var (
 		tz   = flag.String("tz", "UTC", "TimeZone (e.g. JST, UTC, PST)")
@@ -78,4 +68,18 @@ func str2time(value string, sec *bool, msec *bool, nano *bool, loc *time.Locatio
 		i = i / 1000000 // default is msec
 	}
 	fmt.Println(i)
+}
+
+func usage(self string) {
+	fmt.Fprintf(os.Stderr, "%s: a utility for convertig timestamp and unixtime.\n\n", self)
+	fmt.Fprintf(os.Stderr, "USAGE::\n")
+	fmt.Fprintf(os.Stderr, "  %s [OPTIONS] [TIMESTAMP or UNIXTIME]\n\n", self)
+	fmt.Fprintf(os.Stderr, "OPTIONS:\n")
+	flag.PrintDefaults()
+	fmt.Fprintf(os.Stderr, "\n")
+	fmt.Fprintf(os.Stderr, "ARGS:\n")
+	fmt.Fprintf(os.Stderr, "  <TIMESTAMP>\n")
+	fmt.Fprintf(os.Stderr, "      yyyy-MM-dd HH:mm:ss\n")
+	fmt.Fprintf(os.Stderr, "  <UNIXTIME>\n")
+	fmt.Fprintf(os.Stderr, "      elapled time (sec, msec, nsec) from 1970-01-01 00:00:00\n")
 }
