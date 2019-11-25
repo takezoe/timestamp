@@ -16,6 +16,7 @@ func main() {
 		usage(self)
 	}
 	var (
+		// TODO: Allow to include TimeZone in timestamp?
 		tz   = flag.String("tz", "UTC", "TimeZone (e.g. JST, UTC, PST)")
 		sec  = flag.Bool("sec", false, "Output TimeUnit (sec)")
 		msec = flag.Bool("msec", true, "Output TimeUnit (msec)")
