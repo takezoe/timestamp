@@ -27,32 +27,39 @@ func main() {
 	}
 
 	value := args[0]
-
 	i, e := strconv.ParseInt(value, 10, 64)
-	if e == nil {
-		// sec to msec
-		if i < 10000000000 {
-			i = i * 1000
-		}
-		// msec to nsec
-		if i < 10000000000000 {
-			i = i * 1000000
-		}
-		t := time.Unix(0, i).In(loc)
-		fmt.Println(t.Format("2006-01-02 15:04:05") + " " + *tz)
 
+	if e == nil {
+		time2str(i, tz, loc)
 	} else {
-		t, _ := time.ParseInLocation("2006-01-02 15:04:05", value, loc)
-		i := t.UnixNano()
-		if *unit == "sec" {
-			i = i / 1000000000
-		} else if *unit == "msec" {
-			i = i / 1000000
-		} else if *unit == "nano" {
-			i = i
-		} else {
-			i = i / 1000000 // default is msec
-		}
-		fmt.Println(i)
+		str2time(value, unit, loc)
 	}
+}
+
+func time2str(value int64, tz *string, loc *time.Location) {
+	// sec to msec
+	if value < 10000000000 {
+		value = value * 1000
+	}
+	// msec to nsec
+	if value < 10000000000000 {
+		value = value * 1000000
+	}
+	t := time.Unix(0, value).In(loc)
+	fmt.Println(t.Format("2006-01-02 15:04:05") + " " + *tz)
+}
+
+func str2time(value string, unit *string, loc *time.Location) {
+	t, _ := time.ParseInLocation("2006-01-02 15:04:05", value, loc)
+	i := t.UnixNano()
+	if *unit == "sec" {
+		i = i / 1000000000
+	} else if *unit == "msec" {
+		i = i / 1000000
+	} else if *unit == "nano" {
+		i = i
+	} else {
+		i = i / 1000000 // default is msec
+	}
+	fmt.Println(i)
 }
