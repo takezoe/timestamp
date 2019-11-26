@@ -2,6 +2,13 @@ timestamp
 ========
 A utility for converting timestamp and unixtime.
 
+```
+$ timestamp -tz JST -sec "2019-11-26 23:36:00"
+1574778960
+$ timestamp -tz JST 1574778960
+2019-11-26 23:36:00 JST
+```
+
 ## Installation
 
 ```
