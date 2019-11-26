@@ -72,7 +72,7 @@ func str2time(value string, sec *bool, msec *bool, nano *bool, loc *time.Locatio
 }
 
 func usage(self string) {
-	fmt.Fprintf(os.Stderr, "%s: a utility for convertig timestamp and unixtime.\n\n", self)
+	fmt.Fprintf(os.Stderr, "%s: a utility for converting timestamp and unixtime.\n\n", self)
 	fmt.Fprintf(os.Stderr, "USAGE::\n")
 	fmt.Fprintf(os.Stderr, "  %s [OPTIONS] [TIMESTAMP or UNIXTIME]\n\n", self)
 	fmt.Fprintf(os.Stderr, "OPTIONS:\n")
@@ -82,5 +82,5 @@ func usage(self string) {
 	fmt.Fprintf(os.Stderr, "  <TIMESTAMP>\n")
 	fmt.Fprintf(os.Stderr, "      yyyy-MM-dd HH:mm:ss\n")
 	fmt.Fprintf(os.Stderr, "  <UNIXTIME>\n")
-	fmt.Fprintf(os.Stderr, "      elapled time (sec, msec, nsec) from 1970-01-01 00:00:00\n")
+	fmt.Fprintf(os.Stderr, "      elapsed time (sec, msec, nsec) from 1970-01-01 00:00:00\n")
 }
