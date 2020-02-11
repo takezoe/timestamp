@@ -53,7 +53,7 @@ func time2str(value int64, tz *string, loc *time.Location) {
 		value = value * 1000000
 	}
 	t := time.Unix(0, value).In(loc)
-	fmt.Println(t.Format("2006-01-02 15:04:05") + " " + *tz)
+	fmt.Print(t.Format("2006-01-02 15:04:05") + " " + *tz)
 }
 
 func str2time(value string, sec *bool, msec *bool, nano *bool, loc *time.Location) {
@@ -68,7 +68,7 @@ func str2time(value string, sec *bool, msec *bool, nano *bool, loc *time.Locatio
 	} else {
 		i = i / 1000000 // default is msec
 	}
-	fmt.Println(i)
+	fmt.Print(i)
 }
 
 func usage(self string) {
