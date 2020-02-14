@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/tkuchiki/go-timezone"
@@ -16,7 +17,6 @@ func main() {
 		usage(self)
 	}
 	var (
-		// TODO: Allow to include TimeZone in timestamp?
 		tz   = flag.String("tz", "UTC", "TimeZone (e.g. JST, UTC, PST)")
 		sec  = flag.Bool("sec", false, "Output TimeUnit (sec)")
 		msec = flag.Bool("msec", true, "Output TimeUnit (msec)")
@@ -57,8 +57,25 @@ func time2str(value int64, tz *string, loc *time.Location) {
 }
 
 func str2time(value string, sec *bool, msec *bool, nano *bool, loc *time.Location) {
+	// timezone
+	s := strings.Split(value, " ")
+	if len(s) == 3 {
+		value = s[0] + " " + s[1]
+		offset, _ := timezone.GetOffset(s[2])
+		loc = time.FixedZone(s[2], offset)
+	}
+
 	t, _ := time.ParseInLocation("2006-01-02 15:04:05", value, loc)
 	i := t.UnixNano()
+	if i < 0 {
+		t, _ := time.ParseInLocation("2006-01-02 15:04", value, loc)
+		i = t.UnixNano()
+	}
+	if i < 0 {
+		t, _ := time.ParseInLocation("2006-01-02", value, loc)
+		i = t.UnixNano()
+	}
+
 	if *sec == true {
 		i = i / 1000000000
 	} else if *msec == true {
@@ -80,7 +97,7 @@ func usage(self string) {
 	fmt.Fprintf(os.Stderr, "\n")
 	fmt.Fprintf(os.Stderr, "ARGS:\n")
 	fmt.Fprintf(os.Stderr, "  <TIMESTAMP>\n")
-	fmt.Fprintf(os.Stderr, "      yyyy-MM-dd HH:mm:ss\n")
+	fmt.Fprintf(os.Stderr, "      yyyy-MM-dd [HH:mm[:ss] [timezone]]\n")
 	fmt.Fprintf(os.Stderr, "  <UNIXTIME>\n")
-	fmt.Fprintf(os.Stderr, "      elapsed time (sec, msec, nsec) from 1970-01-01 00:00:00\n")
+	fmt.Fprintf(os.Stderr, "      elapsed time (sec, msec, nsec) from 1970-01-01 00:00:00 UTC\n")
 }
