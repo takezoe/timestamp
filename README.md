@@ -25,18 +25,19 @@ USAGE::
 
 OPTIONS:
   -msec
-    	Output TimeUnit (msec) (default true)
+        Output TimeUnit (msec) (default true)
   -nano
-    	Output TimeUnit (nano)
+        Output TimeUnit (nano)
   -sec
-    	Output TimeUnit (sec)
+        Output TimeUnit (sec)
   -tz string
-    	TimeZone (e.g. JST, UTC, PST) (default "UTC")
+        TimeZone (e.g. JST, UTC, PST) (default "UTC")
 
 ARGS:
   <TIMESTAMP>
-      yyyy-MM-dd HH:mm:ss
+      yyyy-MM-dd [HH:mm[:ss] [timezone]]
+      dd MMM yyyy [HH:mm[:ss] [timezone]]
   <UNIXTIME>
-      elapsed time (sec, msec, nsec) from 1970-01-01 00:00:00
+      elapsed time (sec, msec, nsec) from 1970-01-01 00:00:00 UTC
 ```
 
