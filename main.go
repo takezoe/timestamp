@@ -65,27 +65,34 @@ func str2time(value string, sec *bool, msec *bool, nano *bool, loc *time.Locatio
 		loc = time.FixedZone(s[2], offset)
 	}
 
-	t, _ := time.ParseInLocation("2006-01-02 15:04:05", value, loc)
-	i := t.UnixNano()
-	if i < 0 {
-		t, _ := time.ParseInLocation("2006-01-02 15:04", value, loc)
-		i = t.UnixNano()
+	patterns := [...]string{
+		"2006-01-02 15:04:05",
+		"2006-01-02 15:04",
+		"2006-01-02",
+		"02 Jan 2006 15:04:05",
+		"02 Jan 2006 15:04",
+		"02 Jan 2006",
 	}
-	if i < 0 {
-		t, _ := time.ParseInLocation("2006-01-02", value, loc)
-		i = t.UnixNano()
+	result := int64(-1)
+
+	for i := 0; i < len(patterns); i++ {
+		t, _ := time.ParseInLocation(patterns[i], value, loc)
+		result = t.UnixNano()
+		if result >= 0 {
+			break
+		}
 	}
 
 	if *sec == true {
-		i = i / 1000000000
+		result = result / 1000000000
 	} else if *msec == true {
-		i = i / 1000000
+		result = result / 1000000
 	} else if *nano == true {
-		i = i
+		result = result
 	} else {
-		i = i / 1000000 // default is msec
+		result = result / 1000000 // default is msec
 	}
-	fmt.Print(i)
+	fmt.Print(result)
 }
 
 func usage(self string) {
