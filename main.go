@@ -59,10 +59,10 @@ func time2str(value int64, tz *string, loc *time.Location) {
 func str2time(value string, sec *bool, msec *bool, nano *bool, loc *time.Location) {
 	// timezone
 	s := strings.Split(value, " ")
-	if len(s) == 3 {
-		value = s[0] + " " + s[1]
-		offset, _ := timezone.GetOffset(s[2])
+	offset, e := timezone.GetOffset(s[len(s)-1])
+	if e == nil {
 		loc = time.FixedZone(s[2], offset)
+		value = strings.Join(s[0:len(s)-1], " ")
 	}
 
 	patterns := [...]string{
@@ -73,6 +73,7 @@ func str2time(value string, sec *bool, msec *bool, nano *bool, loc *time.Locatio
 		"02 Jan 2006 15:04",
 		"02 Jan 2006",
 	}
+
 	result := int64(-1)
 
 	for i := 0; i < len(patterns); i++ {
@@ -105,6 +106,7 @@ func usage(self string) {
 	fmt.Fprintf(os.Stderr, "ARGS:\n")
 	fmt.Fprintf(os.Stderr, "  <TIMESTAMP>\n")
 	fmt.Fprintf(os.Stderr, "      yyyy-MM-dd [HH:mm[:ss] [timezone]]\n")
+	fmt.Fprintf(os.Stderr, "      dd MMM yyyy [HH:mm[:ss] [timezone]]\n")
 	fmt.Fprintf(os.Stderr, "  <UNIXTIME>\n")
 	fmt.Fprintf(os.Stderr, "      elapsed time (sec, msec, nsec) from 1970-01-01 00:00:00 UTC\n")
 }
