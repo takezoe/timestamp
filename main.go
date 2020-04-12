@@ -18,6 +18,7 @@ func main() {
 	}
 	var (
 		tz   = flag.String("tz", "UTC", "TimeZone (e.g. JST, UTC, PST)")
+		out  = flag.String("out", "", "Output TimeZone (e.g. JST, UTC, PST)")
 		sec  = flag.Bool("sec", false, "Output TimeUnit (sec)")
 		msec = flag.Bool("msec", true, "Output TimeUnit (msec)")
 		nano = flag.Bool("nano", false, "Output TimeUnit (nano)")
@@ -25,8 +26,7 @@ func main() {
 	flag.Parse()
 	args := flag.Args()
 
-	offset, _ := timezone.GetOffset(*tz)
-	loc := time.FixedZone(*tz, offset)
+	loc := getLocation(*tz)
 
 	if len(args) < 1 {
 		flag.Usage()
@@ -37,13 +37,36 @@ func main() {
 	i, e := strconv.ParseInt(value, 10, 64)
 
 	if e == nil {
-		time2str(i, tz, loc)
+		time2str(i, *tz, loc)
 	} else {
-		str2time(value, sec, msec, nano, loc)
+		str2time(value, getTimeunit(*sec, *msec, *nano), loc, *out)
 	}
 }
 
-func time2str(value int64, tz *string, loc *time.Location) {
+func getLocation(tz string) time.Location {
+	// TODO error check and abort
+	offset, e := timezone.GetOffset(tz)
+	if e != nil {
+		fmt.Println(e, os.Stderr)
+		os.Exit(1)
+	}
+	loc := time.FixedZone(tz, offset)
+	return *loc
+}
+
+func getTimeunit(sec bool, msec bool, nano bool) int64 {
+	if sec == true {
+		return 1000000000
+	} else if msec == true {
+		return 1000000
+	} else if nano == true {
+		return 1
+	} else {
+		return 1000000 // default is msec
+	}
+}
+
+func time2str(value int64, tz string, loc time.Location) {
 	// sec to msec
 	if value < 10000000000 {
 		value = value * 1000
@@ -52,48 +75,45 @@ func time2str(value int64, tz *string, loc *time.Location) {
 	if value < 10000000000000 {
 		value = value * 1000000
 	}
-	t := time.Unix(0, value).In(loc)
-	fmt.Print(t.Format("2006-01-02 15:04:05") + " " + *tz)
+	t := time.Unix(0, value).In(&loc)
+	fmt.Println(t.Format("2006-01-02 15:04:05") + " " + tz)
 }
 
-func str2time(value string, sec *bool, msec *bool, nano *bool, loc *time.Location) {
+func str2time(value string, unit int64, loc time.Location, out string) {
 	// timezone
 	s := strings.Split(value, " ")
 	offset, e := timezone.GetOffset(s[len(s)-1])
-	if e == nil {
-		loc = time.FixedZone(s[2], offset)
-		value = strings.Join(s[0:len(s)-1], " ")
+	if e != nil {
+		loc = *time.FixedZone(s[len(s)-1], offset)
 	}
+
+	result := int64(-1)
 
 	patterns := [...]string{
 		"2006-01-02 15:04:05",
 		"2006-01-02 15:04",
 		"2006-01-02",
+		"2006/01/02 15:04:05",
+		"2006/01/02 15:04",
+		"2006/01/02",
 		"02 Jan 2006 15:04:05",
 		"02 Jan 2006 15:04",
 		"02 Jan 2006",
 	}
 
-	result := int64(-1)
-
 	for i := 0; i < len(patterns); i++ {
-		t, _ := time.ParseInLocation(patterns[i], value, loc)
+		t, _ := time.ParseInLocation(patterns[i], value, &loc)
 		result = t.UnixNano()
 		if result >= 0 {
 			break
 		}
 	}
 
-	if *sec == true {
-		result = result / 1000000000
-	} else if *msec == true {
-		result = result / 1000000
-	} else if *nano == true {
-		result = result
+	if out != "" {
+		time2str(result, out, getLocation(out))
 	} else {
-		result = result / 1000000 // default is msec
+		fmt.Println(result / unit)
 	}
-	fmt.Print(result)
 }
 
 func usage(self string) {
