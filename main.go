@@ -17,7 +17,7 @@ func main() {
 		usage(self)
 	}
 	var (
-		tz   = flag.String("tz", "UTC", "TimeZone (e.g. JST, UTC, PST)")
+		tz   = flag.String("tz", "", "TimeZone (e.g. JST, UTC, PST)")
 		out  = flag.String("out", "", "Output TimeZone (e.g. JST, UTC, PST)")
 		sec  = flag.Bool("sec", false, "Output TimeUnit (sec)")
 		msec = flag.Bool("msec", true, "Output TimeUnit (msec)")
@@ -26,12 +26,15 @@ func main() {
 	flag.Parse()
 	args := flag.Args()
 
-	loc := getLocation(*tz)
-
 	if len(args) < 1 {
-		flag.Usage()
-		os.Exit(1)
+		showNow(*tz, getTimeunit(*sec, *msec, *nano))
+		os.Exit(0)
 	}
+
+	if *tz == "" {
+		*tz = "UTC"
+	}
+	loc := getLocation(*tz)
 
 	value := args[0]
 	i, e := strconv.ParseInt(value, 10, 64)
@@ -40,6 +43,15 @@ func main() {
 		time2str(i, *tz, loc)
 	} else {
 		str2time(value, getTimeunit(*sec, *msec, *nano), loc, *out)
+	}
+}
+
+func showNow(tz string, unit int64) {
+	now := time.Now().UnixNano()
+	if tz == "" {
+		fmt.Println(now / unit)
+	} else {
+		time2str(now, tz, getLocation(tz))
 	}
 }
 
