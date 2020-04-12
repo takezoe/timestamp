@@ -44,10 +44,9 @@ func main() {
 }
 
 func getLocation(tz string) time.Location {
-	// TODO error check and abort
 	offset, e := timezone.GetOffset(tz)
 	if e != nil {
-		fmt.Println(e, os.Stderr)
+		fmt.Fprintln(os.Stderr, e)
 		os.Exit(1)
 	}
 	loc := time.FixedZone(tz, offset)
@@ -109,6 +108,11 @@ func str2time(value string, unit int64, loc time.Location, out string) {
 		}
 	}
 
+	if result < 0 {
+		fmt.Fprintln(os.Stderr, "Invalid input: "+value)
+		os.Exit(1)
+	}
+
 	if out != "" {
 		time2str(result, out, getLocation(out))
 	} else {
@@ -125,6 +129,7 @@ func usage(self string) {
 	fmt.Fprintf(os.Stderr, "\n")
 	fmt.Fprintf(os.Stderr, "ARGS:\n")
 	fmt.Fprintf(os.Stderr, "  <TIMESTAMP>\n")
+	fmt.Fprintf(os.Stderr, "      yyyy/MM/dd [HH:mm[:ss] [timezone]]\n")
 	fmt.Fprintf(os.Stderr, "      yyyy-MM-dd [HH:mm[:ss] [timezone]]\n")
 	fmt.Fprintf(os.Stderr, "      dd MMM yyyy [HH:mm[:ss] [timezone]]\n")
 	fmt.Fprintf(os.Stderr, "  <UNIXTIME>\n")
