@@ -17,7 +17,7 @@ func main() {
 		usage(self)
 	}
 	var (
-		tz   = flag.String("tz", "", "TimeZone (e.g. JST, UTC, PST)")
+		tz   = flag.String("tz", "", "TimeZone (e.g. JST, UTC, PST) (default \"UTC\")")
 		out  = flag.String("out", "", "Output TimeZone (e.g. JST, UTC, PST)")
 		sec  = flag.Bool("sec", false, "Output TimeUnit (sec)")
 		msec = flag.Bool("msec", true, "Output TimeUnit (msec)")
@@ -135,12 +135,14 @@ func str2time(value string, unit int64, loc time.Location, out string) {
 func usage(self string) {
 	fmt.Fprintf(os.Stderr, "%s: a utility for converting timestamp and unixtime.\n\n", self)
 	fmt.Fprintf(os.Stderr, "USAGE::\n")
-	fmt.Fprintf(os.Stderr, "  %s [OPTIONS] [TIMESTAMP or UNIXTIME]\n\n", self)
+	fmt.Fprintf(os.Stderr, "  %s [OPTIONS]            ... Show current timestamp or datetime string\n", self)
+	fmt.Fprintf(os.Stderr, "  %s [OPTIONS] [DATETIME] ... Convert datetime string to timestamp\n", self)
+	fmt.Fprintf(os.Stderr, "  %s [OPTIONS] [UNIXTIME] ... Convert timestamp to datetime string\n\n", self)
 	fmt.Fprintf(os.Stderr, "OPTIONS:\n")
 	flag.PrintDefaults()
 	fmt.Fprintf(os.Stderr, "\n")
 	fmt.Fprintf(os.Stderr, "ARGS:\n")
-	fmt.Fprintf(os.Stderr, "  <TIMESTAMP>\n")
+	fmt.Fprintf(os.Stderr, "  <DATETIME>\n")
 	fmt.Fprintf(os.Stderr, "      yyyy/MM/dd [HH:mm[:ss] [timezone]]\n")
 	fmt.Fprintf(os.Stderr, "      yyyy-MM-dd [HH:mm[:ss] [timezone]]\n")
 	fmt.Fprintf(os.Stderr, "      dd MMM yyyy [HH:mm[:ss] [timezone]]\n")
