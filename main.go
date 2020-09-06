@@ -72,9 +72,8 @@ func getTimeunit(sec bool, msec bool, nano bool) int64 {
 		return 1000000
 	} else if nano == true {
 		return 1
-	} else {
-		return 1000000 // default is msec
 	}
+	return 1000000 // default is msec
 }
 
 func time2str(value int64, tz string, loc time.Location) {
