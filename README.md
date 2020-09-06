@@ -1,4 +1,4 @@
-timestamp
+timestamp ![Build](https://github.com/takezoe/timestamp/workflows/Build/badge.svg)
 ========
 A utility for converting timestamp and unixtime.
 
