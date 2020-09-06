@@ -94,13 +94,14 @@ func str2time(value string, unit int64, loc time.Location, out string) {
 	// timezone
 	s := strings.Split(value, " ")
 	offset, e := timezone.GetOffset(s[len(s)-1])
-	if e != nil {
+	if e == nil {
 		loc = *time.FixedZone(s[len(s)-1], offset)
+		value = strings.Join(s[0:len(s)-1], " ")
 	}
 
 	result := int64(-1)
 
-	patterns := [...]string{
+	basicPatterns := []string{
 		"2006-01-02 15:04:05",
 		"2006-01-02 15:04",
 		"2006-01-02",
@@ -110,6 +111,15 @@ func str2time(value string, unit int64, loc time.Location, out string) {
 		"02 Jan 2006 15:04:05",
 		"02 Jan 2006 15:04",
 		"02 Jan 2006",
+		"Mon, 02 Jan 2006 15:04:05",
+	}
+
+	// append timezone patterns
+	patterns := basicPatterns
+	for i := 0; i < len(basicPatterns); i++ {
+		patterns = append(patterns, basicPatterns[i]+" -0700")
+		patterns = append(patterns, basicPatterns[i]+" -07:00")
+		patterns = append(patterns, basicPatterns[i]+" -07")
 	}
 
 	for i := 0; i < len(patterns); i++ {
