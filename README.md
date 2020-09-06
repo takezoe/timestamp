@@ -20,8 +20,8 @@ $ timestamp -tz JST
 
 ## Installation
 
-```
-go get github.com/takezoe/timestamp
+```bash
+$ go get github.com/takezoe/timestamp
 ```
 
 ## Usage
@@ -57,7 +57,7 @@ ARGS:
 
 ## Build from source
 
-```
+```bash
 $ go mod vendor
 $ go install
 ```
