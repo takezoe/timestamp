@@ -55,3 +55,10 @@ ARGS:
       elapsed time (sec, msec, nsec) from 1970-01-01 00:00:00 UTC
 ```
 
+## Build from source
+
+```
+$ go mod vendor
+$ go install
+```
+
